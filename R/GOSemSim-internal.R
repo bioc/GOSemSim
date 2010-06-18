@@ -281,7 +281,7 @@ ygcSemVal <- function(goid, Parents, sv, w, weight.isa, weight.partof) {
 	Info.contents <- get("IC", envir=GOSemSimEnv)
 
 	rootCount <- max(Info.contents[Info.contents != Inf])
-	
+	Info.contents["all"] = 0
 	p1 <- Info.contents[GOID1]/rootCount
 	p2 <- Info.contents[GOID2]/rootCount    
 
@@ -308,12 +308,12 @@ ygcSemVal <- function(goid, Parents, sv, w, weight.isa, weight.partof) {
 		commonAncestor <- intersect(ancestor1, ancestor2)
 	}
 	if (length(commonAncestor) == 0) return (NA)
-	pms <- min(Info.contents[commonAncestor], na.rm=TRUE)/rootCount
+	pms <- max(Info.contents[commonAncestor], na.rm=TRUE)/rootCount
 	sim<-switch(measure,
    	    Resnik = pms,
    	    Lin = pms/(p1+p2),
    	    Jiang = 1 - min(1, -2*pms + p1 + p2), 
-   	    Rel = 2*pms/(p1+p2)*(1-exp(-pms))
+   	    Rel = 2*pms/(p1+p2)*(1-exp(-pms*rootCount))
 	)   	
 	return (sim)
 }
