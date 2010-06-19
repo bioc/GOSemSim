@@ -248,7 +248,7 @@ ygcSemVal_internal <- function(goid, Parents, sv, w, weight.isa, weight.partof) 
 	relations <- names(p)
 	old.w <- w
 	for (i in 1:length(p)) {
-		if (relations[i] == "isa") {
+		if (relations[i] == "is_a") {
 			w <- old.w * weight.isa
 		} else {
 			w <- old.w * weight.partof
