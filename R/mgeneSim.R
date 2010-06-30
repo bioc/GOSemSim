@@ -10,7 +10,7 @@
 	colnames(simMatrix) <- genes
 	rownames(simMatrix) <- genes
 
-	gos <- sapply(genes, function(x) ygcGetOnt(x, organism= wh_organism, ontology= wh_ont, dropCodes=drop))
+	gos <- lapply(genes, function(x) ygcGetOnt(x, organism= wh_organism, ontology= wh_ont, dropCodes=drop))
 
 	assign("GOSemSimCache", new.env(hash=TRUE),envir=.GlobalEnv)
 	for (i in 1:n) {
