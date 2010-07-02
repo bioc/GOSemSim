@@ -199,29 +199,27 @@ ygcWangMethod <- function(GOID1, GOID2, ont="MF", organism="human") {
 	weight.partof = 0.6
 
 	if (GOID1 == GOID2)
-		return (gosim=1)
-		
+		return (gosim=1)		
+
 	Parents.name <- switch(ont,
 		MF = "MFParents",
 		BP = "BPParents",
-		CC = "CCParents"	
-	)	
+		CC = "CCParents"
+	)
 	if (!exists(Parents.name, envir=GOSemSimEnv)) {
 		ygcGetParents(ont)
 	}
-	Parents <- get(Parents.name, envir=GOSemSimEnv)			
-
+	Parents <- get(Parents.name, envir=GOSemSimEnv)
+	
 	sv.a <- 1
 	sv.b <- 1
 	sw <- 1
 	names(sv.a) <- GOID1
 	names(sv.b) <- GOID2 
 	
-	sv.a <- ygcSemVal(GOID1, Parents, sv.a, sw, weight.isa, weight.partof)
-	sv.b <- ygcSemVal(GOID2, Parents, sv.b, sw, weight.isa, weight.partof)
+	sv.a <- ygcSemVal(GOID1, ont, Parents, sv.a, sw, weight.isa, weight.partof)
+	sv.b <- ygcSemVal(GOID2, ont, Parents, sv.b, sw, weight.isa, weight.partof)
 	
-	sv.a <- unlist(sv.a)
-	sv.b <- unlist(sv.b)
 	sv.a <- uniqsv(sv.a)
 	sv.b <- uniqsv(sv.b)
 	
@@ -235,16 +233,19 @@ ygcWangMethod <- function(GOID1, GOID2, ont="MF", organism="human") {
 
 
 uniqsv <- function(sv) {
+	sv <- unlist(sv)
 	una <- unique(names(sv))
 	sv <- unlist(sapply(una, function(x) {max(sv[names(sv)==x])}))
 	return (sv)
 }
 
-ygcSemVal_internal <- function(goid, Parents, sv, w, weight.isa, weight.partof) {
+ygcSemVal_internal <- function(goid, ont, Parents, sv, w, weight.isa, weight.partof) {
 	p <- Parents[goid]
 	p <- unlist(p[[1]])
-	if (length(p) == 0)
+	if (length(p) == 0) {
+		#warning(goid, " may not belong to Ontology ", ont)
 		return(0)
+	}
 	relations <- names(p)
 	old.w <- w
 	for (i in 1:length(p)) {
@@ -256,22 +257,24 @@ ygcSemVal_internal <- function(goid, Parents, sv, w, weight.isa, weight.partof) 
 		names(w) <- p[i]
 		sv <- c(sv,w)
 		if (p[i] != "all") {
-			sv <- ygcSemVal_internal(p[i], Parents, sv, w, weight.isa, weight.partof)
+			sv <- ygcSemVal_internal(p[i], ont, Parents, sv, w, weight.isa, weight.partof)
 		}
 	}
 	return (sv)
 }
-ygcSemVal <- function(goid, Parents, sv, w, weight.isa, weight.partof) {
-	if(!exists("GOSemSimCache")) return(ygcSemVal_internal(goid, Parents, sv, w, weight.isa, weight.partof))
-	if (!exists(goid, envir=GOSemSimCache)) {
-	  	value <- ygcSemVal_internal(goid, Parents, sv, w, weight.isa, weight.partof)
-	  	assign(goid, value, envir=GOSemSimCache)
+
+ygcSemVal <- function(goid, ont, Parents, sv, w, weight.isa, weight.partof) {
+	if(!exists("GOSemSimCache")) return(ygcSemVal_internal(goid, ont, Parents, sv, w, weight.isa, weight.partof))
+	goid.ont <- paste(goid, ont, sep=".")
+	if (!exists(goid.ont, envir=GOSemSimCache)) {
+	  	value <- ygcSemVal_internal(goid, ont, Parents, sv, w, weight.isa, weight.partof)
+	  	assign(goid.ont, value, envir=GOSemSimCache)
 		#cat("recompute ", goid, value, "\n")
 	}
 	else{
 		#cat("cache ", goid, get(goid, envir=GOSemSimCache), "\n")
 	}
-	return(get(goid, envir=GOSemSimCache))
+	return(get(goid.ont, envir=GOSemSimCache))
 }
 
 `ygcInfoContentMethod` <- function(GOID1, GOID2, ont, measure, organism) {
