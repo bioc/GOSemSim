@@ -31,7 +31,11 @@ ygcWangMethod <- function(GOID1, GOID2, ont="MF", organism="human") {
 	idx <- intersect(names(sv.a), names(sv.b))
 	inter.sva <- unlist(sv.a[idx])
 	inter.svb <- unlist(sv.b[idx])
-	sim <- sum(inter.sva,inter.svb) / sum(sv.a, sv.b)
+	if (is.null(inter.sva) || is.null(inter.svb) || length(inter.sva) == 0 || length(inter.svb) ==0) {
+		sim <- NA
+	} else {
+		sim <- sum(inter.sva,inter.svb) / sum(sv.a, sv.b)
+	}
 	return(sim)
 }
 
@@ -49,7 +53,7 @@ ygcSemVal_internal <- function(goid, ont, Parents, sv, w, weight.isa, weight.par
 	p <- unlist(p[[1]])
 	if (length(p) == 0) {
 		#warning(goid, " may not belong to Ontology ", ont)
-		return(0)
+		return(NA)
 	}
 	relations <- names(p)
 	old.w <- w
