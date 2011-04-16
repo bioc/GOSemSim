@@ -16,11 +16,15 @@ setMethod(
 		}
 		for( i in 1:m) {
 			for (j in 1:n) {
-				if (ic) {
-					scores[i,j] <- .infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, method=params@method, organism=params@organism)
-				}
-				if (params@method == "Wang") {
-					scores[i,j] <- .wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, params@organism)
+				if ( is.na(object@GOSet1[i]) || is.na(object@GOSet2[j]) ) {
+					scores[i,j] <- NA
+				} else {
+					if (ic) {
+						scores[i,j] <- .infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, method=params@method, organism=params@organism)
+					}
+					if (params@method == "Wang") {
+						scores[i,j] <- .wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, params@organism)
+					}
 				}
 			}
 		}
