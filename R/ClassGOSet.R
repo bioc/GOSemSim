@@ -1,5 +1,3 @@
-setClass("GOSet", representation(GOSet1="character", GOSet2="character"))
-
 setMethod(
 	f= "sim", 
 	signature= "GOSet", 
@@ -20,15 +18,17 @@ setMethod(
 					scores[i,j] <- NA
 				} else {
 					if (ic) {
-						scores[i,j] <- .infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, method=params@method, organism=params@organism)
+						ONTANCESTOR <- .getAncestors(params@ontology)
+						scores[i,j] <- DOSE:::.infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, ONTANCESTOR, method=params@method, organism=params@organism)
 					}
 					if (params@method == "Wang") {
-						scores[i,j] <- .wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, params@organism)
+						ONTPARENTS <- .getParents(params@ontology)
+						scores[i,j] <- DOSE:::.wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, ONTPARENTS)
 					}
 				}
 			}
 		}
-		result <- .combineScores(scores, params@combine)
+		result <- DOSE:::.combineScores(scores, params@combine)
 		return(result)
 	}
 )
