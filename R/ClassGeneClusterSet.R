@@ -1,3 +1,5 @@
+setClass("GeneClusterSet", representation(GeneClusters="list"))
+
 setMethod(
 	f= "sim", 
 	signature= "GeneClusterSet", 

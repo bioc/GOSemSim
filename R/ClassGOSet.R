@@ -1,3 +1,5 @@
+setClass("GOSet", representation(GOSet1="character", GOSet2="character"))
+
 setMethod(
 	f= "sim", 
 	signature= "GOSet", 
