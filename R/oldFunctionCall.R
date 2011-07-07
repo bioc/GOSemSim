@@ -32,37 +32,9 @@ geneSim <- function(gene1, gene2, ont="MF", organism="human", measure="Wang", dr
 #geneSim("241", "251", ont="MF", organism="human", measure="Wang")
 
 mgeneSim <- function (genes, ont="MF", organism="human", measure="Wang", drop="IEA", combine="rcmax.avg") {
-	genes <- genes[!is.na(genes)]
-	n <- length(genes)
-	
-	if (n < 2) {
-		stop("gene vector must longer than one.")
-	}	
-	simMatrix <- matrix(NA, nrow=n, ncol=n)
-	colnames(simMatrix) <- genes
-	rownames(simMatrix) <- genes	
 	params <- new("Params", ontology=ont, organism=organism, method=measure, combine=combine, dropCodes=drop)
-	gos <- lapply(genes, function(x) gene2GO(x, params))
-	for (i in 1:n) {
-		for (j in 1:i) {
-			simMatrix[i,j] <- NA
-			if(any(!is.na(gos[[i]])) &&  any(!is.na(gos[[j]])))
-			{
-				sim <- mgoSim(gos[[i]],gos[[j]], ont, organism, measure, combine)
-				sim <- round(sim, digits=3)
-				simMatrix[i,j] <- sim
-			}
-			if (i != j)	{
-				simMatrix[j,i] <- simMatrix[i,j]
-			}
-		}
-	}
-	
-	removeNA <- apply(!is.na(simMatrix), 1, sum)>0
-	result <- simMatrix[removeNA, removeNA]
-	#
-	#gs <- new("GeneSet", GeneSet1 = genes, GeneSet2=genes)
-	#result <- sim(gs, params)
+	gs <- new("GeneSet", GeneSet1 = genes, GeneSet2=genes)
+	result <- sim(gs, params)
 	return(round(result, digits=3))
 }
 

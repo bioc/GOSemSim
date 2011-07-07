@@ -20,17 +20,15 @@ setMethod(
 					scores[i,j] <- NA
 				} else {
 					if (ic) {
-						ONTANCESTOR <- .getAncestors(params@ontology)
-						scores[i,j] <- DOSE:::.infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, ONTANCESTOR, method=params@method, organism=params@organism)
+						scores[i,j] <- .infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, method=params@method, organism=params@organism)
 					}
 					if (params@method == "Wang") {
-						ONTPARENTS <- .getParents(params@ontology)
-						scores[i,j] <- DOSE:::.wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, ONTPARENTS)
+						scores[i,j] <- .wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, params@organism)
 					}
 				}
 			}
 		}
-		result <- DOSE:::.combineScores(scores, params@combine)
+		result <- .combineScores(scores, params@combine)
 		return(result)
 	}
 )

@@ -3,6 +3,7 @@ setClass(Class="Params",
 	prototype=prototype (dropCodes="NULL")
 )
 
+
 setValidity("Params",
 	function(object) {
 		if(!exists("GOSemSimEnv")) .initial()

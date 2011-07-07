@@ -1,6 +1,5 @@
 setClass("GeneSet", representation(GeneSet1="character", GeneSet2="character"))
 
-
 setMethod(
 	f= "sim", 
 	signature= "GeneSet", 
@@ -10,7 +9,7 @@ setMethod(
 		}
 		GOS1 <- lapply(object@GeneSet1, gene2GO, params)
 		GOS2 <- lapply(object@GeneSet2, gene2GO, params)
-		#assign("GOSemSimCache", new.env(hash=TRUE),envir=.GlobalEnv)
+		assign("GOSemSimCache", new.env(hash=TRUE),envir=.GlobalEnv)
 		
 		m = length(object@GeneSet1)
 		n = length(object@GeneSet2)
@@ -26,7 +25,7 @@ setMethod(
 				}
 			}
 		}
-		#remove("GOSemSimCache", envir=.GlobalEnv)
+		remove("GOSemSimCache", envir=.GlobalEnv)
 		removeRowNA <- apply(!is.na(simScores), 1, sum)>0
 		removeColNA <- apply(!is.na(simScores), 2, sum)>0
 		return(simScores[removeRowNA, removeColNA])
