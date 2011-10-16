@@ -138,7 +138,7 @@ setMethod(
 		# IC of GO terms was quantified as the negative log likelihood. 	
 		IC <- -log(p)
 
-		save(IC, file=paste(paste("Info_Contents", params@organism, params@ontology, sep="_"), ".rda", sep=""))
+		save(IC, file=paste(paste("Info_Contents", params@organism, params@ontology, sep="_"), ".rda", sep=""), compress="xz")
 	}
 )
 

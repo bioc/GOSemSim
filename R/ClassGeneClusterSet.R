@@ -10,7 +10,7 @@ setMethod(
 		for(i in 1:size){
 			cluster_gos[[i]]=sapply(object@GeneClusters[[i]], gene2GO, params)
 		}
-		#assign("GOSemSimCache", new.env(hash=TRUE),envir=.GlobalEnv)
+		assign("GOSemSimCache", new.env(hash=TRUE),envir=.GlobalEnv)
 		
 		simScores <- matrix(NA, nrow=size, ncol=size)
 		rownames(simScores) <- names(object@GeneClusters)
@@ -33,7 +33,7 @@ setMethod(
 				}
 			}
 		}
-		#remove("GOSemSimCache", envir=.GlobalEnv)
+		remove("GOSemSimCache", envir=.GlobalEnv)
 		removeNA <- apply(!is.na(simScores), 1, sum)>0
 		return(simScores[removeNA, removeNA])
 	}
