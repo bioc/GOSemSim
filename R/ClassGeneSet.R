@@ -1,3 +1,5 @@
+setClass("GeneSet", representation(GeneSet1="character", GeneSet2="character"))
+
 setMethod(
 	f= "sim", 
 	signature= "GeneSet", 

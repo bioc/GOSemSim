@@ -1,3 +1,8 @@
+setClass(Class="Params", 
+	representation(ontology="character", organism="character", method="character", combine="character", dropCodes="character"),
+	prototype=prototype (dropCodes="NULL")
+)
+
 setValidity("Params",
 	function(object) {
 		if(!exists("GOSemSimEnv")) .initial()
