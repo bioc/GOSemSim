@@ -98,7 +98,7 @@ gene2GO <-  function(gene, params) {
 	if (length(qGO) == 0) {
 		return (NA)
 	}    
-	return( names(qGO) )
+	return( unique(names(qGO)) )
 }
 
 ###########################################################
