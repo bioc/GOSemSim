@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.12.1
+------------------------
+ o bug fixed for multiple annotation.
+ 
 CHANGES IN VERSION 1.11.2
 ------------------------
  o Using methods implemented in DOSE for semantic similarity calculation.

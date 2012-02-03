@@ -5,11 +5,15 @@ setMethod(
 	signature= "GOSet", 
 	definition=function(object, params){
 		ICmethods <- c("Resnik", "Jiang", "Lin", "Rel")
-		m <- length(object@GOSet1)
-		n <- length(object@GOSet2)
+		go1 <- object@GOSet1
+		go2 <- object@GOSet2
+		go1 <- unique(go1)
+		go2 <- unique(go2)
+		m <- length(go1)
+		n <- length(go2)
 		scores <- matrix(nrow=m, ncol=n)
-		rownames(scores) <- object@GOSet1
-		colnames(scores) <- object@GOSet2
+		rownames(scores) <- go1
+		colnames(scores) <- go2
 		ic = params@method %in% ICmethods
 		if (ic) {
 			loadICdata(params)
@@ -17,10 +21,10 @@ setMethod(
 		for( i in 1:m) {
 			for (j in 1:n) {
 				if (ic) {
-					scores[i,j] <- .infoContentMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, method=params@method, organism=params@organism)
+					scores[i,j] <- .infoContentMethod(go1[i], go2[j], ont=params@ontology, method=params@method, organism=params@organism)
 				}
 				if (params@method == "Wang") {
-					scores[i,j] <- .wangMethod(object@GOSet1[i], object@GOSet2[j], ont=params@ontology, params@organism)
+					scores[i,j] <- .wangMethod(go1[i], go2[j], ont=params@ontology, params@organism)
 				}
 			}
 		}
