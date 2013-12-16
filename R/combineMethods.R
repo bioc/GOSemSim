@@ -31,9 +31,11 @@ combineScores <- function(SimScores, combine) {
         SimScores <- SimScores[-which(row.na.idx), ]
     }
 
-    col.na.idx <- apply(SimScores, 2, function(i) all(is.na(i)))
-    if (any(col.na.idx)) {
-        SimScores <- SimScores[ , -which(col.na.idx)]
+    if (! is.null(dim(SimScores)) ) {
+        col.na.idx <- apply(SimScores, 2, function(i) all(is.na(i)))
+        if (any(col.na.idx)) {
+            SimScores <- SimScores[ , -which(col.na.idx)]
+        }
     }
 
     if (is.vector(SimScores) || nrow(SimScores)==1 || ncol(SimScores)==1) {
