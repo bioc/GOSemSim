@@ -77,6 +77,7 @@ getAncestors <- function(ont) {
 ##' @param organism one of supported species
 ##' @return semantic similarity score
 ##' @useDynLib GOSemSim
+##' @importFrom Rcpp sourceCpp
 ##' @author Guangchuang Yu \url{http://ygc.name}
 infoContentMethod <- function(ID1,
                               ID2,
