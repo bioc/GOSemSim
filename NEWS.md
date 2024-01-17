@@ -4,7 +4,7 @@
 
 # GOSemSim 2.27.2
 
-+ `read.blast2go()` to parse 'blast2go' result (2023-07-10, Mon)
++ `read.blast2go()` to parse 'blast2go' result (2023-07-10, Mon, #41, #42)
 + move `buildGOmap()` and `read.gaf()` from 'clusterProfiler' (2023-07-10, Mon)
 
 # GOSemSim 2.27.1
