@@ -1,4 +1,4 @@
-# GOSemSim 2.29.1.001
+# GOSemSim 2.29.2
 
 + update `buildGOmap()` parameter to consistent with `enricher()` and `GSEA()` (2024-02-06, Tue, #47)
 
