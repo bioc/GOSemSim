@@ -53,7 +53,7 @@ mclusterSim <- function(clusters, semData, measure="Wang", drop="IEA", combine="
             gos2 <- unlist(cluster_gos[[j]])
             gos2 <- gos2[!is.na(gos2)]
             if (length(gos1) != 0 && length(gos2) !=0)
-                scores[i,j] <- combineScores(go_matrix[gos1, gos2], combine=combine)
+                scores[i,j] <- combineScores(go_matrix[gos1, gos2, drop=FALSE], combine=combine)
                 scores[j,i] <- scores[i,j]
         }
     }
