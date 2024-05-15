@@ -1,3 +1,7 @@
+# GOSemSim 2.30.0
+
++ Bioconductor RELEASE_3_19 (2024-05-15, Wed)
+
 # GOSemSim 2.29.2
 
 + update `buildGOmap()` parameter to consistent with `enricher()` and `GSEA()` (2024-02-06, Tue, #47)
