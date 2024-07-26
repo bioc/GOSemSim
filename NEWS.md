@@ -1,3 +1,7 @@
+# GOSemSim 2.31.0.001
+
++ use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
+
 # GOSemSim 2.30.0
 
 + Bioconductor RELEASE_3_19 (2024-05-15, Wed)

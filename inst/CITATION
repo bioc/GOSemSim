@@ -1,5 +1,7 @@
 citHeader("To cite GOSemSim in publications use:")
 
+refs <- yulab.utils:::ref_knowledge()
+
 citEntry(entry  ="ARTICLE",
          title = "Gene Ontology Semantic Similarity Analysis Using GOSemSim",
          author = person("Guangchuang", "Yu"),
@@ -11,11 +13,7 @@ citEntry(entry  ="ARTICLE",
          PMID = "31960380",
          issn = "1940-6029",
          doi = "10.1007/978-1-0716-0301-7_11",
-         textVersion = paste("Guangchuang Yu.",
-                             "Gene Ontology Semantic Similarity Analysis Using GOSemSim.",
-                             "In: Kidder B. (eds) Stem Cell Transcriptional Networks.",
-                             "Methods in Molecular Biology, 2020, 2117:207-215.",
-                             "Humana, New York, NY.")
+         textVersion = refs['GOSemSim_MMB']
 )
 
 citEntry(entry  ="ARTICLE",
@@ -35,9 +33,7 @@ citEntry(entry  ="ARTICLE",
          pages   = "976-978",
          PMID    = "20179076",
          doi     = "10.1093/bioinformatics/btq064",
-         textVersion = paste("Guangchuang Yu, Fei Li, Yide Qin, Xiaochen Bo, Yibo Wu and Shengqi Wang.",
-             "GOSemSim: an R package for measuring semantic similarity among GO terms and gene products.",
-             "Bioinformatics 2010 26(7):976-978")
+         textVersion = refs['GOSemSim']
          )
 
 
