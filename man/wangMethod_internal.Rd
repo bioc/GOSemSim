@@ -20,5 +20,5 @@ semantic similarity score
 Method Wang for semantic similarity measuring
 }
 \author{
-Guangchuang Yu \url{http://ygc.name}
+Guangchuang Yu \url{https://yulab-smu.top}
 }

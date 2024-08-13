@@ -15,7 +15,7 @@ wangMethod <- function(t1, t2, ont) {
 ##' @param ID2 Ontology Term
 ##' @param ont Ontology
 ##' @return semantic similarity score
-##' @author Guangchuang Yu \url{http://ygc.name}
+##' @author Guangchuang Yu \url{https://yulab-smu.top}
 wangMethod_internal <- function(ID1, ID2, ont="BP") {
     if (ID1 == ID2)
         return (sim=1)

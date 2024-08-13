@@ -22,7 +22,7 @@ infoContentMethod <- function(ID1,
         stop("IC data not found, please re-generate your `semData` with `computeIC=TRUE`...")
     }
 
-    if (ont %in% c("MF", "BP", "CC", "DO", "MPO")) {
+    if (ont %in% c("MF", "BP", "CC", "HDO", "MPO")) {
         ## .anc <- tryCatch(getAncestors(ont)[union(ID1,ID2)], error=function(e) NULL)
         ## if (is.null(.anc)) {
         ##     ## https://support.bioconductor.org/p/105822/
@@ -31,7 +31,7 @@ infoContentMethod <- function(ID1,
         ## .anc <- AnnotationDbi::as.list(.anc)
 
         ## if some IDs are not valid, the above code will leading to return NA directly.
-        .anc <- AnnotationDbi::as.list(getAncestors(ont))
+        .anc <- getAncestors(ont)
         allid <- union(ID1, ID2)
         .anc <- .anc[allid]
         .anc <- .anc[!vapply(.anc, is.empty, logical(1))]
