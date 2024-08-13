@@ -23,6 +23,7 @@ Imports:
     DBI,
     digest,
     GO.db,
+    httr2,
     methods,
     rlang,
     stats,

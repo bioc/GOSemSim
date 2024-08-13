@@ -6,6 +6,7 @@ wangMethod <- function(t1, t2, ont) {
            dimnames = list( t1, t2 ), ncol=length(t2) ) 
 }
 
+
 ##' Method Wang for semantic similarity measuring
 ##'
 ##'
@@ -18,22 +19,16 @@ wangMethod <- function(t1, t2, ont) {
 wangMethod_internal <- function(ID1, ID2, ont="BP") {
     if (ID1 == ID2)
         return (sim=1)
-    if (ont == "DO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("dotbl", envir=.DOSEEnv)
-    } else if (ont %in% c("BP", "CC", "MF")) {
+
+    if (ont %in% c("BP", "CC", "MF")) {
         if (!exists(".GOSemSimEnv")) .initial()
         .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
         rel_df <- get("gotbl", envir=.GOSemSimEnv)
-    } else if (ont == "MPO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("mpotbl", envir=.DOSEEnv)
-    } else if (ont == "HPO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("hpotbl", envir=.DOSEEnv)
-    } else {
+    } else if (ont == "MeSH") {
         .meshesEnv <- get(".meshesEnv", envir=.GlobalEnv)
         rel_df <- get("meshtbl", envir=.meshesEnv)
+    } else {
+        rel_df <- get_rel_df(ont)
     }
     
     
@@ -56,6 +51,28 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
     sim <- sum(inter.sva,inter.svb) / sum(sv.a, sv.b)
     return(sim)
 }
+
+get_rel_df <- function(ont) {
+    ont_db <- load_onto(ont)
+    gtb <- toTable(ont_db)
+    gtb <- gtb[,1, drop=FALSE]
+    gtb <- unique(gtb)
+
+    id <- gtb$id
+    parent <- getParents(ont)
+    pid <- parent[id]
+    cid <- rep(names(pid), times=sapply(pid, length))
+
+    ptb <- data.frame(id=cid,
+                      relationship = 'other',
+                      parent = unlist(pid),
+                      Ontology = ont,
+                      stringsAsFactors = FALSE)
+
+    rel_df <- merge(gtb, ptb, by="id")
+    return(rel_df)
+}
+
 
 getSV <- function(ID, ont, rel_df, weight=NULL) {
     if (!exists(".SemSimCache")) .initial()

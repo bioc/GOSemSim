@@ -46,8 +46,6 @@ load_OrgDb <- function(OrgDb) {
 ##' @importFrom GO.db GOBPANCESTOR
 ##' @importFrom GO.db GOCCANCESTOR
 getAncestors <- function(ont) {
-    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
-
     if (ont %in% c("MF", "BP", "CC")) {
         Ancestors <- switch(ont,
                             MF = GOMFANCESTOR,
@@ -65,8 +63,6 @@ getAncestors <- function(ont) {
 ##' @importFrom GO.db GOBPPARENTS
 ##' @importFrom GO.db GOCCPARENTS
 getParents <- function(ont) {
-    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
-
     if (ont %in% c("MF", "BP", "CC")) {
         Parents <- switch(ont,
                         MF = GOMFPARENTS,
@@ -84,8 +80,6 @@ getParents <- function(ont) {
 ##' @importFrom GO.db GOBPOFFSPRING
 ##' @importFrom GO.db GOCCOFFSPRING
 getOffsprings <- function(ont) {
-    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
-
     if (ont %in% c("MF", "BP", "CC")) {
         Offsprings <- switch(ont,
                         MF = GOMFOFFSPRING,

@@ -96,12 +96,12 @@ load_onto <- function(onto = "HDO") {
     if (!dir.exists(dir)) dir.create(dir)
 
     dbfile0 <- sprintf("%s.sqlite", onto)
-    dbfile <- file.path(dir, dbfile0)
+    dbfile <- normalizePath(file.path(dir, dbfile0))
 
     if (file.exists(dbfile)) {
         md5 <- read.delim('https://yulab-smu.top/DOSE/md5.txt', header=FALSE)
         md5_remote <- md5[md5[,1] == dbfile0, 2]
-        md5_local <- digest::digest(dbfile, algo='md5')
+        md5_local <- digest::digest(dbfile, algo='md5', file=TRUE)
         if (md5_remote != md5_local) {
             msg <- sprintf("%s is outdated, download the latest version...\n", dbfile0)
             cat(msg)
@@ -117,11 +117,20 @@ load_onto <- function(onto = "HDO") {
 
     if (need_dl) {
         url <- sprintf('https://yulab-smu.top/DOSE/%s', dbfile0)
-        utils::download.file(url, destfile=dbfile)
+        mydownload(url, dbfile)
     } 
 
-    setRefClass("OntDb", contains="AnnotationDb")
     db <- loadDb(dbfile)
     assign(.onto, db, envir = .env)
     return(db)
+}
+
+#' @importFrom httr2 request
+#' @importFrom httr2 req_progress
+#' @importFrom httr2 req_perform
+mydownload <- function(url, destfile) {
+    req <- request(url) |> 
+        req_progress()
+    
+    req |> req_perform(path = destfile)
 }
