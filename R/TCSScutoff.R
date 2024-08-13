@@ -53,10 +53,8 @@ tcss_cutoff <- function(OrgDb = NULL, keytype = "ENTREZID", ont,
   #cutoff is in the range of ICT value
   IC <- semdata@IC
   GO <- names(IC[!is.infinite(IC)])
-  offspring <- switch(ont,
-                      MF = AnnotationDbi::as.list(GOMFOFFSPRING),
-                      BP = AnnotationDbi::as.list(GOBPOFFSPRING),
-                      CC = AnnotationDbi::as.list(GOCCOFFSPRING))
+  offspring <- getOffsprings(ont) 
+  
   #compute ICT value for each term
   ICT <- computeICT(GO, offspring)
   #cutoffs, all possible cutoff values

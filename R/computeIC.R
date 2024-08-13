@@ -1,7 +1,3 @@
-##' @importFrom AnnotationDbi as.list
-##' @importFrom GO.db GOBPOFFSPRING
-##' @importFrom GO.db GOCCOFFSPRING
-##' @importFrom GO.db GOMFOFFSPRING
 computeIC <- function(goAnno, ont) {
     ## goAnno, see godata function
     if (!exists(".GOSemSimEnv")) .initial()
@@ -23,10 +19,7 @@ computeIC <- function(goAnno, ont) {
     names(gocount) <- goname
     gocount        <- c(gocount, m)
 
-    Offsprings <- switch(ont,
-                         MF = AnnotationDbi::as.list(GOMFOFFSPRING),
-                         BP = AnnotationDbi::as.list(GOBPOFFSPRING),
-                         CC = AnnotationDbi::as.list(GOCCOFFSPRING))
+    Offsprings <- getOffsprings(ont) 
         
     cnt <- gocount[goids] + sapply(goids, function(i) sum(gocount[Offsprings[[i]]], na.rm=TRUE))
     names(cnt) <- goids

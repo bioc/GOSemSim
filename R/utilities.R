@@ -13,6 +13,13 @@
     rm(gotbl, envir = .GlobalEnv)
 }
 
+get_gosemsim_env <- function() {
+    if (!exists(".GOSemSimEnv")) {
+        .initial()
+    }
+    get(".GOSemSimEnv")    
+}
+
 ##' load OrgDb
 ##'
 ##' 
@@ -22,7 +29,7 @@
 ##' @importFrom methods is
 ##' @importFrom utils getFromNamespace 
 ##' @export
-##' @author Guangchuang Yu
+##' @author Guangchuang Yu \url{https://yulab-smu.top}
 load_OrgDb <- function(OrgDb) {
     #if (is(OrgDb, "character")) {
     #    require(OrgDb, character.only = TRUE)
@@ -39,42 +46,57 @@ load_OrgDb <- function(OrgDb) {
 ##' @importFrom GO.db GOBPANCESTOR
 ##' @importFrom GO.db GOCCANCESTOR
 getAncestors <- function(ont) {
-    Ancestors <- switch(ont,
-                        MF = "GOMFANCESTOR",
-                        BP = "GOBPANCESTOR",
-                        CC = "GOCCANCESTOR",
-                        DO = "HDO.db::HDOANCESTOR",
-                        MPO = "MPO.db::MPOANCESTOR"
-                        )
-    if (ont == "DO") {
-        db <- "HDO.db"
-        ## require(db, character.only=TRUE)
-        requireNamespace(db)
+    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
+
+    if (ont %in% c("MF", "BP", "CC")) {
+        Ancestors <- switch(ont,
+                            MF = GOMFANCESTOR,
+                            BP = GOBPANCESTOR,
+                            CC = GOCCANCESTOR
+                            )
+        anc <- AnnotationDbi::as.list(Ancestors)
+        return(anc)
     }
 
-    if (ont == "MPO") {
-        db <- "MPO.db"
-        requireNamespace(db)
-    }
-    return (eval(parse(text=Ancestors)))
+    get_onto_data(ont, output = 'list', 'ancestor') 
 }
 
 ##' @importFrom GO.db GOMFPARENTS
 ##' @importFrom GO.db GOBPPARENTS
 ##' @importFrom GO.db GOCCPARENTS
 getParents <- function(ont) {
-    Parents <- switch(ont,
-                      MF = "GOMFPARENTS",
-                      BP = "GOBPPARENTS",
-                      CC = "GOCCPARENTS",
-                      DO = "HDO.db::HDOPARENTS"
-                      )
-    if (ont == "DO") {
-        db <- "HDO.db"
-        requireNamespace(db)
+    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
+
+    if (ont %in% c("MF", "BP", "CC")) {
+        Parents <- switch(ont,
+                        MF = GOMFPARENTS,
+                        BP = GOBPPARENTS,
+                        CC = GOCCPARENTS
+                        )
+        parent <- AnnotationDbi::as.list(Parents)
+        return(parent)
     }
-    Parents <- eval(parse(text=Parents))
-    return(Parents)
+
+    get_onto_data(ont, output = 'list', 'parent') 
+}
+
+##' @importFrom GO.db GOMFOFFSPRING
+##' @importFrom GO.db GOBPOFFSPRING
+##' @importFrom GO.db GOCCOFFSPRING
+getOffsprings <- function(ont) {
+    ont <- match.arg(ont, c("MF", "BP", "CC", "DO", "MPO", "HPO"))
+
+    if (ont %in% c("MF", "BP", "CC")) {
+        Offsprings <- switch(ont,
+                        MF = GOMFOFFSPRING,
+                        BP = GOBPOFFSPRING,
+                        CC = GOCCOFFSPRING
+                        )
+        offspring <- AnnotationDbi::as.list(Offsprings)
+        return(offspring)
+    }
+
+    get_onto_data(ont, output = 'list', 'offspring') 
 }
 
 ##' @importFrom GO.db GOTERM
@@ -87,8 +109,9 @@ prepare_relation_df <- function() {
     ptb <- lapply(c("BP", "MF", "CC"), function(ont) {
         id <- with(gtb, go_id[Ontology == ont])
         parentMap <- getParents(ont)
-        pid <- AnnotationDbi::mget(id, parentMap)
-        
+        # pid <- AnnotationDbi::mget(id, parentMap)
+        pid <- parentMap[id]
+
         n <- sapply(pid, length)
         cid <- rep(names(pid), times=n)
         relationship <- unlist(lapply(pid, names))
