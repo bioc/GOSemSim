@@ -21,8 +21,7 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
         return (sim=1)
 
     if (ont %in% c("BP", "CC", "MF")) {
-        if (!exists(".GOSemSimEnv")) .initial()
-        .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
+        .GOSemSimEnv <- get_gosemsim_env()
         rel_df <- get("gotbl", envir=.GOSemSimEnv)
     } else if (ont == "MeSH") {
         .meshesEnv <- get(".meshesEnv", envir=.GlobalEnv)
@@ -54,7 +53,8 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
 
 get_rel_df <- function(ont) {
     ontbl <- sprintf("%stbl", ont)
-    .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
+    .GOSemSimEnv <- get_gosemsim_env()
+
     if (exists(ontbl, envir=.GOSemSimEnv)) {
         res <- get(ontbl, envir=.GOSemSimEnv)
         return(res)
