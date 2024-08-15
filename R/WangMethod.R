@@ -53,6 +53,13 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
 }
 
 get_rel_df <- function(ont) {
+    ontbl <- sprintf("%stbl", ont)
+    .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
+    if (exists(ontbl, envir=.GOSemSimEnv)) {
+        res <- get(ontbl, envir=.GOSemSimEnv)
+        return(res)
+    }
+
     ont_db <- load_onto(ont)
     gtb <- toTable(ont_db)
     gtb <- gtb[,1, drop=FALSE]
@@ -70,6 +77,10 @@ get_rel_df <- function(ont) {
                       stringsAsFactors = FALSE)
 
     rel_df <- merge(gtb, ptb, by="id")
+    rel_df <- rel_df[!is.na(rel_df$id), ]
+    rel_df <- rel_df[!is.na(rel_df$parent), ]
+
+    assign(ontbl, rel_df, envir = .GOSemSimEnv)
     return(rel_df)
 }
 
@@ -83,7 +94,7 @@ getSV <- function(ID, ont, rel_df, weight=NULL) {
         return(sv)
     }
 
-    if (ont == "DO") {
+    if (ont == "HDO") {
         topNode <- "DOID:4"
     } else if (ont == "MPO") {
        topNode <- "MP:0000001"

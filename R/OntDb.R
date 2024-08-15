@@ -116,8 +116,10 @@ load_onto <- function(onto = "HDO") {
     }
 
     if (need_dl) {
-        url <- sprintf('https://yulab-smu.top/DOSE/%s', dbfile0)
-        mydownload(url, dbfile)
+        url <- sprintf('https://yulab-smu.top/DOSE/%s.gz', dbfile0)
+        gzdbfile <- sprintf("%s.gz", dbfile)
+        mydownload(url, gzdbfile)
+        R.utils::gunzip(gzdbfile, overwrite = TRUE)
     } 
 
     db <- loadDb(dbfile)
