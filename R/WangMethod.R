@@ -6,6 +6,7 @@ wangMethod <- function(t1, t2, ont) {
            dimnames = list( t1, t2 ), ncol=length(t2) ) 
 }
 
+
 ##' Method Wang for semantic similarity measuring
 ##'
 ##'
@@ -14,26 +15,19 @@ wangMethod <- function(t1, t2, ont) {
 ##' @param ID2 Ontology Term
 ##' @param ont Ontology
 ##' @return semantic similarity score
-##' @author Guangchuang Yu \url{http://ygc.name}
+##' @author Guangchuang Yu \url{https://yulab-smu.top}
 wangMethod_internal <- function(ID1, ID2, ont="BP") {
     if (ID1 == ID2)
         return (sim=1)
-    if (ont == "DO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("dotbl", envir=.DOSEEnv)
-    } else if (ont %in% c("BP", "CC", "MF")) {
-        if (!exists(".GOSemSimEnv")) .initial()
-        .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
+
+    if (ont %in% c("BP", "CC", "MF")) {
+        .GOSemSimEnv <- get_gosemsim_env()
         rel_df <- get("gotbl", envir=.GOSemSimEnv)
-    } else if (ont == "MPO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("mpotbl", envir=.DOSEEnv)
-    } else if (ont == "HPO") {
-        .DOSEEnv <- get(".DOSEEnv", envir=.GlobalEnv)
-        rel_df <- get("hpotbl", envir=.DOSEEnv)
-    } else {
+    } else if (ont == "MeSH") {
         .meshesEnv <- get(".meshesEnv", envir=.GlobalEnv)
         rel_df <- get("meshtbl", envir=.meshesEnv)
+    } else {
+        rel_df <- get_rel_df(ont)
     }
     
     
@@ -57,6 +51,40 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
     return(sim)
 }
 
+get_rel_df <- function(ont) {
+    ontbl <- sprintf("%stbl", ont)
+    .GOSemSimEnv <- get_gosemsim_env()
+
+    if (exists(ontbl, envir=.GOSemSimEnv)) {
+        res <- get(ontbl, envir=.GOSemSimEnv)
+        return(res)
+    }
+
+    ont_db <- load_onto(ont)
+    gtb <- toTable(ont_db)
+    gtb <- gtb[,1, drop=FALSE]
+    gtb <- unique(gtb)
+
+    id <- gtb$id
+    parent <- getParents(ont)
+    pid <- parent[id]
+    cid <- rep(names(pid), times=sapply(pid, length))
+
+    ptb <- data.frame(id=cid,
+                      relationship = 'other',
+                      parent = unlist(pid),
+                      Ontology = ont,
+                      stringsAsFactors = FALSE)
+
+    rel_df <- merge(gtb, ptb, by="id")
+    rel_df <- rel_df[!is.na(rel_df$id), ]
+    rel_df <- rel_df[!is.na(rel_df$parent), ]
+
+    assign(ontbl, rel_df, envir = .GOSemSimEnv)
+    return(rel_df)
+}
+
+
 getSV <- function(ID, ont, rel_df, weight=NULL) {
     if (!exists(".SemSimCache")) .initial()
     .SemSimCache <- get(".SemSimCache", envir=.GlobalEnv)
@@ -66,7 +94,7 @@ getSV <- function(ID, ont, rel_df, weight=NULL) {
         return(sv)
     }
 
-    if (ont == "DO") {
+    if (ont == "HDO") {
         topNode <- "DOID:4"
     } else if (ont == "MPO") {
        topNode <- "MP:0000001"

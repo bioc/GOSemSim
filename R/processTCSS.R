@@ -26,31 +26,8 @@ process_tcss <- function(ont, IC, cutoff = NULL) {
     }
 
     GO <- names(IC[!is.infinite(IC)])
-    if (ont == "DO") {
-        db <- "HDO.db"
-        ## require(db, character.only=TRUE)
-        requireNamespace(db)
-    }
 
-    if (ont == "MPO") {
-        db <- "MPO.db"
-        requireNamespace(db)
-    }
-
-    if (ont == "HPO") {
-        db <- "HPO.db"
-        requireNamespace(db)
-    }
-
-    offspring <- switch(ont,
-                        MF = "GOMFOFFSPRING",
-                        BP = "GOBPOFFSPRING",
-                        CC = "GOCCOFFSPRING",
-                        DO = "HDO.db::HDOOFFSPRING",
-                        MPO = "MPO.db::MPOOFFSPRING",
-                        HPO = "HPO.db::HPOOFFSPRING"
-    )
-    offspring <- AnnotationDbi::as.list(eval(parse(text=offspring)))
+    offspring <- getOffsprings(ont) 
     # calculate ICT
     ICT <- computeICT(GO, offspring = offspring)
     # nodes smaller than cutoff are meta-terms
@@ -191,33 +168,7 @@ create_sub_terms <- function(meta_terms, offspring) {
 #' @noRd
 #'
 remove_close <- function(meta_terms, ont, ICT) {
-    if (ont == "DO") {
-        db <- "HDO.db"
-        ## require(db, character.only=TRUE)
-        requireNamespace(db)
-    }
-
-    if (ont == "MPO") {
-        db <- "MPO.db"
-        requireNamespace(db)
-    }
-
-    if (ont == "HPO") {
-        db <- "HPO.db"
-        requireNamespace(db)
-    }
-
-    parents <- switch(ont,
-                      MF = "GOMFPARENTS",
-                      BP = "GOBPPARENTS",
-                      CC = "GOCCPARENTS",
-                      DO = "HDO.db::HDOPARENTS",
-                      MPO = "MPO.db::MPOPARENTS",
-                      HPO = "HPO.db::HPOPARENTS"
-    )
-
-
-    parents <- AnnotationDbi::as.list(eval(parse(text=parents)))
+    parents <- getParents(ont) 
 
     # reserve all nodes in advance
     all_ <- meta_terms
