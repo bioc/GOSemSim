@@ -118,7 +118,7 @@ load_onto <- function(onto = "HDO") {
     if (need_dl) {
         url <- sprintf('https://yulab-smu.top/DOSE/%s.gz', dbfile0)
         gzdbfile <- sprintf("%s.gz", dbfile)
-        mydownload(url, gzdbfile)
+        yulab.utils:::mydownload(url, gzdbfile)
         R.utils::gunzip(gzdbfile, overwrite = TRUE)
     } 
 
@@ -127,12 +127,3 @@ load_onto <- function(onto = "HDO") {
     return(db)
 }
 
-#' @importFrom httr2 request
-#' @importFrom httr2 req_progress
-#' @importFrom httr2 req_perform
-mydownload <- function(url, destfile) {
-    req <- request(url) |> 
-        req_progress()
-    
-    req |> req_perform(path = destfile)
-}
