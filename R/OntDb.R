@@ -83,6 +83,7 @@ get_onto_data <- function(ont = "HDO", output='list', table="offspring") {
 
 #' @importFrom digest digest
 #' @importFrom AnnotationDbi loadDb
+#' @importFrom R.utils gunzip
 load_onto <- function(onto = "HDO") {
     .env <- get_gosemsim_env()
     .onto <- sprintf(".onto_%s", onto)
@@ -96,7 +97,7 @@ load_onto <- function(onto = "HDO") {
     if (!dir.exists(dir)) dir.create(dir)
 
     dbfile0 <- sprintf("%s.sqlite", onto)
-    dbfile <- normalizePath(file.path(dir, dbfile0))
+    dbfile <- file.path(dir, dbfile0)
 
     if (file.exists(dbfile)) {
         md5 <- read.delim('https://yulab-smu.top/DOSE/md5.txt', header=FALSE)

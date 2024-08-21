@@ -23,12 +23,12 @@ wangMethod_internal <- function(ID1, ID2, ont="BP") {
     if (ont %in% c("BP", "CC", "MF")) {
         .GOSemSimEnv <- get_gosemsim_env()
         rel_df <- get("gotbl", envir=.GOSemSimEnv)
-    } else if (ont == "MeSH") {
+    } else if (ont %in% c("HDO", "HPO", "MPO")) {
+        rel_df <- get_rel_df(ont)
+    } else {
         .meshesEnv <- get(".meshesEnv", envir=.GlobalEnv)
         rel_df <- get("meshtbl", envir=.meshesEnv)
-    } else {
-        rel_df <- get_rel_df(ont)
-    }
+    } 
     
     
     sv.a <- getSV(ID1, ont, rel_df)
